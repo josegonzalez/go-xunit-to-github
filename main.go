@@ -110,7 +110,7 @@ func processFile(file string, skipOk bool) (string, error) {
 
 	if !skipOk || testsuite.Failures > 0 {
 		message := fmt.Sprintf("1..%d (%s)", testsuite.Tests, testsuite.Name)
-		body += "## " + message + "\n"
+		body += "## " + message + "\n\n"
 		println(message)
 	}
 
@@ -157,7 +157,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		body += data
+		body += data + "\n"
 	}
 
 	githubAccessToken := os.Getenv("GITHUB_ACCESS_TOKEN")
