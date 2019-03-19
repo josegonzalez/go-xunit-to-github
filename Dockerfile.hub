@@ -1,0 +1,3 @@
+FROM scratch
+COPY ./build/linux/xunit-to-github /xunit-to-github
+ENTRYPOINT ["/xunit-to-github"]
