@@ -110,7 +110,7 @@ func processFile(file string, skipOk bool) (string, error) {
 
 	if !skipOk || testsuite.Failures > 0 {
 		message := fmt.Sprintf("1..%d (%s)", testsuite.Tests, testsuite.Name)
-		body += "## " + message + "\n"
+		body += "### " + message + "\n\n"
 		println(message)
 	}
 
@@ -141,6 +141,8 @@ func processFile(file string, skipOk bool) (string, error) {
 func main() {
 	flags := flag.NewFlagSet("xunit-to-github", flag.ExitOnError)
 	skipOk := flags.Bool("skip-ok", false, "skip-ok: Whether to skip ok tests or not")
+	title := flags.String("title", "", "title: A title for the comment")
+	jobUrl := flags.String("job-url", "", "job-url: A url for the report")
 	pullRequestId := flags.Int("pull-request-id", 0, "pull-request-id: A pull request ID")
 	repositorySlug := flags.String("repository-slug", "", "repository-slug: The slug of the repository")
 	flags.Parse(os.Args[1:])
@@ -157,7 +159,7 @@ func main() {
 		if err != nil {
 			log.Fatal(err)
 		}
-		body += data
+		body += data + "\n"
 	}
 
 	githubAccessToken := os.Getenv("GITHUB_ACCESS_TOKEN")
@@ -171,6 +173,14 @@ func main() {
 
 	if body == "" {
 		return
+	}
+
+	if *jobUrl != "" {
+		body = fmt.Sprintf("[Build Url](%s)", *jobUrl) + "\n\n" + body
+	}
+
+	if *title != "" {
+		body = "## " + *title + "\n\n" + body
 	}
 
 	message := map[string]interface{}{
