@@ -162,6 +162,10 @@ func main() {
 		return
 	}
 
+	if body == "" {
+		return
+	}
+
 	message := map[string]interface{}{
 		"body": body,
 	}
