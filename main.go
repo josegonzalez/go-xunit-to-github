@@ -11,6 +11,7 @@ import (
 	"log"
 	"net/http"
 	"os"
+	"path/filepath"
 	"strings"
 )
 
@@ -59,10 +60,14 @@ func getFiles(args []string) ([]string, error) {
 			}
 
 			for _, file := range filesInPath {
-				files = append(files, file)
+				if filepath.Ext(file) == ".xml" {
+					files = append(files, file)
+				}
 			}
 		} else {
-			files = append(files, f.Name())
+			if filepath.Ext(f.Name()) == ".xml" {
+				files = append(files, f.Name())
+			}
 		}
 	}
 
@@ -81,7 +86,9 @@ func getFilesFromPath(path string) ([]string, error) {
 		if f.IsDir() {
 			continue
 		}
-		files = append(files, fmt.Sprintf("%s/%s", path, f.Name()))
+		if filepath.Ext(f.Name()) == ".xml" {
+			files = append(files, fmt.Sprintf("%s/%s", path, f.Name()))
+		}
 	}
 
 	return files, nil
